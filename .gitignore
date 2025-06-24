@@ -33,6 +33,9 @@ coverage/
 *.swo
 .eslintcache
 
+# Arquivos de texto
+*.txt
+
 # Diretório temporário do Prisma
 /prisma/migrations/dev/
 
