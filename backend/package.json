@@ -1,0 +1,52 @@
+{
+  "name": "controle-ti-backend",
+  "version": "0.1.0-alpha",
+  "description": "Backend para o sistema de Gestão de Equipamentos de TI",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write 'src/**/*.js'",
+    "migrate": "prisma migrate dev",
+    "seed": "node prisma/seed.js",
+    "studio": "prisma studio",
+    "generate": "prisma generate"
+  },
+  "keywords": [
+    "gestao-equipamentos",
+    "inventario",
+    "ti",
+    "controle"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.4",
+    "helmet": "^7.0.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.1.0",
+    "prisma": "^5.0.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

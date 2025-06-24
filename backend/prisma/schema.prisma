@@ -1,0 +1,243 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo principal para equipamentos
+model Equipamento {
+  id                Int               @id @default(autoincrement())
+  numero_serie      String?           @unique
+  numero_patrimonio String            @unique
+  modelo            String
+  data_aquisicao    DateTime
+  data_garantia     DateTime?
+  observacoes       String?           @db.Text
+  criado_em         DateTime          @default(now())
+  atualizado_em     DateTime          @updatedAt
+  criado_por        Int?
+  atualizado_por    Int?
+  deleted_at        DateTime?
+
+  // Relações
+  tipo              TipoEquipamento   @relation(fields: [tipo_id], references: [id])
+  tipo_id           Int
+  fabricante        Fabricante        @relation(fields: [fabricante_id], references: [id])
+  fabricante_id     Int
+  status            StatusEquipamento @relation(fields: [status_id], references: [id])
+  status_id         Int
+  departamento      Departamento?     @relation(fields: [departamento_id], references: [id])
+  departamento_id   Int?
+  empresa           Empresa           @relation(fields: [empresa_id], references: [id])
+  empresa_id        Int
+  localizacao       Localizacao?      @relation(fields: [localizacao_id], references: [id])
+  localizacao_id    Int?
+
+  // Relações inversas
+  movimentacoes      Movimentacao[]  @relation("EquipamentoMovimentacao")
+
+  @@map("equipamentos")
+}
+
+// Tabelas de apoio
+model TipoEquipamento {
+  id          Int           @id @default(autoincrement())
+  nome        String        @unique
+  descricao   String?       @db.Text
+  ativo       Boolean       @default(true)
+  equipamentos Equipamento[]
+
+  @@map("tipos_equipamento")
+}
+
+model Fabricante {
+  id          Int           @id @default(autoincrement())
+  nome        String        @unique
+  site        String?
+  contato     String?
+  telefone    String?
+  email       String?
+  ativo       Boolean       @default(true)
+  equipamentos Equipamento[]
+
+  @@map("fabricantes")
+}
+
+model StatusEquipamento {
+  id          Int           @id @default(autoincrement())
+  nome        String        @unique
+  descricao   String?       @db.Text
+  cor         String        @db.VarChar(7)
+  ativo       Boolean       @default(true)
+  equipamentos Equipamento[]
+  
+  // Relações inversas para movimentações
+  status_anterior Movimentacao[] @relation("StatusAnterior")
+  status_novo     Movimentacao[] @relation("StatusNovo")
+
+  @@map("status_equipamento")
+}
+
+model Estado {
+  id          Int      @id @default(autoincrement())
+  nome        String   @unique
+  sigla       String   @unique @db.Char(2)
+  cidades     Cidade[]
+
+  @@map("estados")
+}
+
+model Cidade {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  estado      Estado   @relation(fields: [estado_id], references: [id])
+  estado_id   Int
+  codigo_ibge String?
+  empresas    Empresa[]
+
+  @@map("cidades")
+}
+
+model Departamento {
+  id            Int           @id @default(autoincrement())
+  nome          String        @unique
+  descricao     String?       @db.Text
+  responsavel   Usuario?      @relation(fields: [responsavel_id], references: [id])
+  responsavel_id Int?
+  ativo         Boolean       @default(true)
+  equipamentos   Equipamento[]
+  usuarios       Usuario[]
+
+  @@map("departamentos")
+}
+
+model Empresa {
+  id          Int           @id @default(autoincrement())
+  nome        String
+  razao_social String?
+  cnpj        String        @unique
+  endereco    String?
+  cidade      Cidade?       @relation(fields: [cidade_id], references: [id])
+  cidade_id   Int?
+  telefone    String?
+  email       String?
+  ativo       Boolean       @default(true)
+  equipamentos Equipamento[]
+  localizacoes Localizacao[]
+  usuarios     Usuario[]
+
+  @@map("empresas")
+}
+
+model Localizacao {
+  id          Int           @id @default(autoincrement())
+  nome        String
+  andar       String?
+  sala        String?
+  descricao   String?       @db.Text
+  empresa     Empresa       @relation(fields: [empresa_id], references: [id])
+  empresa_id  Int
+  ativo       Boolean       @default(true)
+  equipamentos Equipamento[]
+  
+  // Relações inversas para movimentações
+  localizacao_anterior Movimentacao[] @relation("LocalizacaoAnterior")
+  localizacao_nova     Movimentacao[] @relation("LocalizacaoNova")
+
+  @@map("localizacoes")
+}
+
+model NivelAcesso {
+  id           Int        @id @default(autoincrement())
+  nome         String     @unique
+  descricao    String?    @db.Text
+  permissoes   Json?
+  usuarios     Usuario[]
+
+  @@map("niveis_acesso")
+}
+
+model Usuario {
+  id               Int         @id @default(autoincrement())
+  nome             String
+  email            String      @unique
+  senha            String
+  nivel            NivelAcesso @relation(fields: [nivel_id], references: [id])
+  nivel_id         Int
+  departamento     Departamento? @relation(fields: [departamento_id], references: [id])
+  departamento_id  Int?
+  empresa          Empresa?      @relation(fields: [empresa_id], references: [id])
+  empresa_id       Int?
+  ativo            Boolean     @default(true)
+  ultima_senha     DateTime?
+  tentativas_login Int         @default(0)
+  dois_fatores     Boolean     @default(false)
+  chave_dois_fatores String?
+  ultimo_login     DateTime?
+  criado_em        DateTime    @default(now())
+  atualizado_em    DateTime    @updatedAt
+  
+  // Relações inversas
+  departamentos_gerenciados Departamento[] @relation("Departamento")
+  movimentacoes  Movimentacao[]
+  configuracoes  Configuracao[]
+  logs_auditoria LogAuditoria[]
+
+  @@map("usuarios")
+}
+
+model Movimentacao {
+  id                    Int              @id @default(autoincrement())
+  equipamento           Equipamento      @relation("EquipamentoMovimentacao", fields: [equipamento_id], references: [id])
+  equipamento_id        Int
+  status_anterior       StatusEquipamento? @relation("StatusAnterior", fields: [status_anterior_id], references: [id])
+  status_anterior_id    Int?
+  status_novo           StatusEquipamento? @relation("StatusNovo", fields: [status_novo_id], references: [id])
+  status_novo_id        Int?
+  localizacao_anterior  Localizacao?     @relation("LocalizacaoAnterior", fields: [localizacao_anterior_id], references: [id])
+  localizacao_anterior_id Int?
+  localizacao_nova      Localizacao?     @relation("LocalizacaoNova", fields: [localizacao_nova_id], references: [id])
+  localizacao_nova_id   Int?
+  usuario               Usuario         @relation(fields: [usuario_id], references: [id])
+  usuario_id            Int
+  data_movimentacao     DateTime        @default(now())
+  observacoes           String?         @db.Text
+
+  @@map("movimentacoes")
+}
+
+model Configuracao {
+  id             Int      @id @default(autoincrement())
+  chave          String   @unique
+  valor          String   @db.Text
+  grupo          String
+  descricao      String?  @db.Text
+  tipo           String
+  atualizado_em  DateTime @updatedAt
+  atualizado_por Usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id     Int?
+
+  @@map("configuracoes")
+}
+
+model LogAuditoria {
+  id          Int      @id @default(autoincrement())
+  usuario     Usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id  Int?
+  data_hora   DateTime @default(now())
+  acao        String
+  tabela      String?
+  registro_id Int?
+  dados_anteriores Json?
+  dados_novos     Json?
+  ip          String?
+  user_agent  String?  @db.Text
+
+  @@map("logs_auditoria")
+}

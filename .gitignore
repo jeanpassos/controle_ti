@@ -1,0 +1,41 @@
+# Dependências
+node_modules/
+/.pnp
+.pnp.js
+
+# Produção
+/build
+/dist
+/out
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Diretório de cobertura de teste
+coverage/
+
+# Arquivos temporários
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+.eslintcache
+
+# Diretório temporário do Prisma
+/prisma/migrations/dev/
+
+# Pacotes opcionais
+/.package-lock.json
+yarn.lock
