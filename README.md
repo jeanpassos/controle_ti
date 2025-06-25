@@ -1,6 +1,6 @@
 # Gestão de Equipamentos TI
 
-*Versão: 0.52.0* | *Última atualização: 2025-06-24*
+*Versão: 0.53.0* | *Última atualização: 2025-06-25*
 
 Sistema de gerenciamento completo para inventário, movimentação e controle de equipamentos de TI empresariais.
 
@@ -10,7 +10,7 @@ Esta aplicação web foi projetada para ser uma solução abrangente para empres
 
 ## Versão Atual
 
-![Versão](https://img.shields.io/badge/Versão-0.1.0--alpha-blue)
+![Versão](https://img.shields.io/badge/Versão-0.53.0-blue)
 
 **Estado**: Em desenvolvimento
 

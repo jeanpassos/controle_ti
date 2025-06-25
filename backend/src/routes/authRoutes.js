@@ -6,28 +6,21 @@
 
 const express = require('express');
 const router = express.Router();
-// Esta linha será substituída pelo controlador real quando for implementado
 const authController = require('../controllers/authController');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
- * @route POST /api/auth/login
- * @desc Autenticar usuário e retornar tokens
- * @access Public
+ * Rotas de autenticação
+ * Endpoints para login, refresh, logout e validação de token
  */
+
+// Rota para login
 router.post('/login', authController.login);
 
-/**
- * @route POST /api/auth/refresh
- * @desc Renovar token JWT usando refresh token
- * @access Public
- */
+// Rota para refresh token
 router.post('/refresh', authController.refreshToken);
 
-/**
- * @route POST /api/auth/logout
- * @desc Invalidar tokens do usuário
- * @access Private
- */
+// Rota para logout
 router.post('/logout', authController.logout);
 
 /**

@@ -20,6 +20,16 @@ const queryClient = new QueryClient({
   },
 })
 
+// Adiciona classe dark/light ao root baseado em localStorage ou preferência do sistema
+try {
+  const savedTheme = localStorage.getItem('theme') || 
+    (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.classList.add(savedTheme);
+} catch (e) {
+  console.error('Erro ao aplicar tema inicial:', e);
+  document.documentElement.classList.add('light'); // fallback para tema claro
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>

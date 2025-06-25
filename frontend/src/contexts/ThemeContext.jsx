@@ -1,54 +1,57 @@
-import { createContext, useState, useEffect } from 'react'
+import React, { createContext } from 'react'
 
 /**
  * Contexto para gerenciamento de temas da aplicação
  * Suporta alternância entre temas claro e escuro
  * 
- * @version 0.1.0-alpha
+ * @version 0.52.0
  */
-export const ThemeContext = createContext()
 
+// Implementação simplificada
+const getThemeFromStorage = () => {
+  try {
+    return localStorage.getItem('theme') || 'light';
+  } catch (e) {
+    return 'light';
+  }
+};
+
+// Valor inicial do tema
+const currentTheme = getThemeFromStorage();
+
+// Contexto com valores pré-definidos simples
+export const ThemeContext = createContext({
+  theme: currentTheme,
+  toggleTheme: () => {
+    try {
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(newTheme);
+      localStorage.setItem('theme', newTheme);
+      window.location.reload(); // Força atualização para aplicar mudança
+    } catch (e) {
+      console.error('Erro ao alternar tema:', e);
+    }
+  },
+  setThemeMode: (mode) => {
+    try {
+      if (mode === 'light' || mode === 'dark') {
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(mode);
+        localStorage.setItem('theme', mode);
+        window.location.reload(); // Força atualização para aplicar mudança
+      }
+    } catch (e) {
+      console.error('Erro ao definir tema:', e);
+    }
+  }
+});
+
+// Provider simplificado que apenas repassa os children
 export const ThemeProvider = ({ children }) => {
-  // Estado para armazenar o tema atual
-  const [theme, setTheme] = useState(() => {
-    // Verificar se há preferência salva no localStorage
-    const savedTheme = localStorage.getItem('theme')
-    
-    // Verificar preferência do sistema se não houver tema salvo
-    if (!savedTheme) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches 
-        ? 'dark' 
-        : (import.meta.env.VITE_DEFAULT_THEME || 'light')
-    }
-    
-    return savedTheme
-  })
-
-  // Efeito para aplicar o tema ao documento
-  useEffect(() => {
-    // Remover ambas as classes para garantir consistência
-    document.documentElement.classList.remove('light', 'dark')
-    // Adicionar a classe do tema atual
-    document.documentElement.classList.add(theme)
-    // Salvar no localStorage
-    localStorage.setItem('theme', theme)
-  }, [theme])
-
-  // Função para alternar entre os temas
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'))
-  }
-
-  // Função para definir um tema específico
-  const setThemeMode = (mode) => {
-    if (mode === 'light' || mode === 'dark') {
-      setTheme(mode)
-    }
-  }
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setThemeMode }}>
+    <ThemeContext.Provider value={ThemeContext._currentValue}>
       {children}
     </ThemeContext.Provider>
-  )
-}
+  );
+};

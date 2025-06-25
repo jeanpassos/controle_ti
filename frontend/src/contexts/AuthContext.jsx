@@ -1,83 +1,69 @@
-import { createContext, useState, useEffect } from 'react'
-import jwtDecode from 'jwt-decode'
-import api from '../services/api'
+import React, { createContext, useState, useEffect } from 'react';
+import authService from '../services/authService';
+import api from '../services/api';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 /**
- * Contexto para gerenciamento de autenticação
+ * Contexto de autenticação
+ * Gerencia estado de autenticação do usuário
  * 
- * @version 0.1.0-alpha
+ * @version 0.52.0
  */
-export const AuthContext = createContext()
+export const AuthContext = createContext({});
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
-  
-  // Verifica se há um token armazenado ao iniciar a aplicação
+/**
+ * Provider do contexto de autenticação
+ * @param {Object} props
+ * @returns {JSX.Element}
+ */
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Efeito para recuperar estado de autenticação ao iniciar a aplicação
   useEffect(() => {
-    const checkAuth = async () => {
+    const initAuth = async () => {
       try {
-        const token = localStorage.getItem('token')
-        const refreshToken = localStorage.getItem('refreshToken')
+        setIsLoading(true);
         
-        if (!token || !refreshToken) {
-          throw new Error('Tokens não encontrados')
-        }
-        
-        // Verifica se o token está expirado
-        const decodedToken = jwtDecode(token)
-        const currentTime = Date.now() / 1000
-        
-        if (decodedToken.exp < currentTime) {
-          // Token expirado, tenta renovar com refresh token
-          await refreshAccessToken()
-        } else {
-          // Token ainda válido
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-          setUser(decodedToken)
-          setIsAuthenticated(true)
+        // Verifica se há um usuário armazenado
+        const storedUser = authService.getCurrentUser();
+        if (storedUser) {
+          // Verifica se o token armazenado ainda é válido
+          const isValid = await authService.validateToken();
+          
+          if (isValid) {
+            setUser(storedUser);
+            setIsAuthenticated(true);
+          } else {
+            // Token inválido ou expirado e não foi possível renovar
+            authService.clearSession();
+          }
         }
       } catch (error) {
-        console.error('Erro de autenticação:', error)
-        logout()
+        console.error('Erro ao inicializar autenticação:', error);
+        authService.clearSession();
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
     
-    checkAuth()
-  }, [])
+    initAuth();
+  }, []);
   
   /**
    * Tenta renovar o access token usando o refresh token
    */
   const refreshAccessToken = async () => {
     try {
-      const refreshToken = localStorage.getItem('refreshToken')
-      
-      if (!refreshToken) {
-        throw new Error('Refresh token não encontrado')
-      }
-      
-      const response = await api.post('/auth/refresh', { refreshToken })
-      const { token, refreshToken: newRefreshToken } = response.data
-      
-      // Armazena novos tokens
-      localStorage.setItem('token', token)
-      localStorage.setItem('refreshToken', newRefreshToken)
-      
-      // Atualiza estado e headers
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      setUser(jwtDecode(token))
-      setIsAuthenticated(true)
-      
-      return true
+      return await authService.refreshToken();
     } catch (error) {
-      console.error('Falha ao renovar token:', error)
-      logout()
-      return false
+      console.error('Falha ao renovar token:', error);
+      logout();
+      return false;
     }
   }
   
@@ -86,35 +72,24 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, senha) => {
     try {
-      setIsLoading(true)
-      setError(null)
+      setIsLoading(true);
+      setError(null);
       
-      const response = await api.post('/auth/login', { email, senha })
-      const { token, refreshToken, require2FA } = response.data
+      const result = await authService.login(email, senha);
       
-      // Verifica se é necessário 2FA
-      if (require2FA) {
-        return { require2FA: true, email }
+      if (result.success) {
+        setUser(result.user);
+        setIsAuthenticated(true);
       }
       
-      // Login realizado com sucesso
-      localStorage.setItem('token', token)
-      localStorage.setItem('refreshToken', refreshToken)
-      
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      
-      const decodedUser = jwtDecode(token)
-      setUser(decodedUser)
-      setIsAuthenticated(true)
-      
-      return { success: true }
+      return result;
     } catch (error) {
-      console.error('Erro ao fazer login:', error)
-      const errorMessage = error.response?.data?.message || 'Erro ao fazer login'
-      setError(errorMessage)
-      return { error: errorMessage }
+      console.error('Erro ao fazer login:', error);
+      const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
+      setError(errorMessage);
+      return { error: errorMessage };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
   
@@ -123,29 +98,24 @@ export const AuthProvider = ({ children }) => {
    */
   const validate2FA = async (email, code) => {
     try {
-      setIsLoading(true)
-      setError(null)
+      setIsLoading(true);
+      setError(null);
       
-      const response = await api.post('/auth/2fa/validate', { email, code })
-      const { token, refreshToken } = response.data
+      const result = await authService.validate2FA(email, code);
       
-      localStorage.setItem('token', token)
-      localStorage.setItem('refreshToken', refreshToken)
+      if (result.success) {
+        setUser(result.user);
+        setIsAuthenticated(true);
+      }
       
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      
-      const decodedUser = jwtDecode(token)
-      setUser(decodedUser)
-      setIsAuthenticated(true)
-      
-      return { success: true }
+      return result;
     } catch (error) {
-      console.error('Erro ao validar 2FA:', error)
-      const errorMessage = error.response?.data?.message || 'Código inválido'
-      setError(errorMessage)
-      return { error: errorMessage }
+      console.error('Erro ao validar 2FA:', error);
+      const errorMessage = error.response?.data?.message || 'Código inválido';
+      setError(errorMessage);
+      return { error: errorMessage };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
   
@@ -154,22 +124,12 @@ export const AuthProvider = ({ children }) => {
    */
   const logout = async () => {
     try {
-      const token = localStorage.getItem('token')
-      
-      if (token) {
-        await api.post('/auth/logout')
-      }
+      await authService.logout();
     } catch (error) {
-      console.error('Erro ao fazer logout:', error)
+      console.error('Erro ao fazer logout:', error);
     } finally {
-      // Limpa dados do usuário
-      localStorage.removeItem('token')
-      localStorage.removeItem('refreshToken')
-      
-      delete api.defaults.headers.common['Authorization']
-      
-      setUser(null)
-      setIsAuthenticated(false)
+      setUser(null);
+      setIsAuthenticated(false);
     }
   }
   

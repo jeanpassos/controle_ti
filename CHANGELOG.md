@@ -13,6 +13,25 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - Rascunho inicial da API REST
 - Planejamento da estrutura da UI
 
+## [0.53.0] - 2025-06-25
+
+### Corrigido
+- Correções críticas no ThemeProvider para garantir funcionamento estável
+- Adicionado import explícito do React no App.jsx
+- Resolvidos problemas com favicon.svg faltante
+- Corrigidos erros 504 (Outdated Optimize Dep) no carregamento de dependências
+- Implementada solução robusta para gerenciamento de tema claro/escuro
+- Padronizados os nomes das chaves de tokens no localStorage
+
+### Melhorado
+- Processo de desenvolvimento com limpeza de cache do Vite para evitar erros de bundle
+- Reorganizado fluxo de renderização para evitar dependências circulares
+
+### Validado
+- Frontend carregando corretamente com página de login funcional
+- Sistema completo de autenticação JWT integrado entre frontend e backend
+- Integração das tabelas de apoio como TipoEquipamento
+
 ## [0.52.0] - 2025-06-24
 
 ### Adicionado

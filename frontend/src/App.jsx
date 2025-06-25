@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import Layout from './components/Layout/Layout'
@@ -10,6 +10,8 @@ const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'))
 const Equipamentos = lazy(() => import('./pages/Equipamentos/Equipamentos'))
 const EquipamentoDetalhes = lazy(() => import('./pages/Equipamentos/EquipamentoDetalhes'))
 const EquipamentoForm = lazy(() => import('./pages/Equipamentos/EquipamentoForm'))
+const TiposEquipamentoList = lazy(() => import('./pages/TiposEquipamento/TiposEquipamentoList'))
+const TipoEquipamentoForm = lazy(() => import('./pages/TiposEquipamento/TipoEquipamentoForm'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 /**
@@ -49,6 +51,12 @@ function App() {
             <Route path="novo" element={<EquipamentoForm />} />
             <Route path=":id" element={<EquipamentoDetalhes />} />
             <Route path=":id/editar" element={<EquipamentoForm />} />
+          </Route>
+          
+          <Route path="tipos-equipamento">
+            <Route index element={<TiposEquipamentoList />} />
+            <Route path="novo" element={<TipoEquipamentoForm />} />
+            <Route path="editar/:id" element={<TipoEquipamentoForm />} />
           </Route>
           
           {/* Adicionar outras rotas conforme necessário */}

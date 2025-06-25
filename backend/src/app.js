@@ -55,9 +55,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rotas de API
 app.use('/api/auth', require('./routes/authRoutes'));
+
+// Rotas de tabelas de suporte
+app.use('/api/tipos-equipamento', require('./routes/tipoEquipamentoRoutes'));
+
+/* Rotas a serem implementadas conforme o desenvolvimento avança
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
 app.use('/api/equipamentos', require('./routes/equipamentoRoutes'));
-app.use('/api/tipos-equipamento', require('./routes/tipoEquipamentoRoutes'));
 app.use('/api/fabricantes', require('./routes/fabricanteRoutes'));
 app.use('/api/status-equipamento', require('./routes/statusEquipamentoRoutes'));
 app.use('/api/departamentos', require('./routes/departamentoRoutes'));
@@ -71,6 +75,7 @@ app.use('/api/configuracoes', require('./routes/configuracaoRoutes'));
 app.use('/api/logs-auditoria', require('./routes/logAuditoriaRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/relatorios', require('./routes/relatorioRoutes'));
+*/
 
 // Rota de status da API
 app.get('/api/status', (req, res) => {
