@@ -17,16 +17,58 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Adicionado
 - Implementado menu recolhível com exibição apenas de ícones e animação suave
-- Adicionado ícone de usuário na parte inferior da sidebar recolhida
-- Integração do Material Icons via CDN para exibição dos ícones no menu
-- Títulos de página dinâmicos no header principal do Layout
+- Codificado novo componente Sidebar independente para gerenciar estado recolhido/expandido
+- Adicionado ícone de usuário interativo na parte inferior da sidebar recolhida
+- Integração do Material Icons via CDN para exibição correta dos ícones no menu
+- Títulos de página dinâmicos no header principal do Layout (desacoplamento da UI)
+- Implementado mecanismo de transformação de largura com Tailwind para animação suave
+- Criado MenuContext para comunicação entre componentes Layout e Sidebar
+- Adicionado serviço menuService.js para carregamento dinâmico dos itens de menu
+- Integrado serviço temaService.js para personalização visual centralizada
+- Criado postcss.config.js para garantir processamento correto do Tailwind CSS
+
+### Corrigido
+- Solucionado bug crítico de falta dos ícones do Material Icons no frontend
+- Resolvido problema de ergonomia em telas pequenas causado pela sidebar fixa
+- Corrigido comportamento inconsistente de amimacão da sidebar em estados alternados
+- Solucionado problema de layout quebrado em resoluções muito pequenas (< 640px)
+- Corrigida ausência de ícone de usuário no menu recolhido
+- Consertado erro de CSS causando sobreposição de elementos no header
+- Ajustado problema de posicionamento incorreto do botão de theme toggle
+- Corrigido CSS ineficiente causando flickering durante transicão do tema
 
 ### Melhorado
-- Substituição do botão de tema por ícones visuais de sol/lua
-- Centralização da exibição do título das páginas no header
-- UI mais consistente com exibição do nível de acesso do usuário na Sidebar
-- Reduzido uso de espaço horizontal em telas menores com menu recolhível
-- Melhorada ergonomia de navegação com ícones de menu intuitivos
+- Substituição do texto "nightlight" por ícones visuais intuitivos de sol/lua
+- Centralização da exibição do título das páginas no header principal
+- UI significativamente mais consistente com exibição do nível de acesso do usuário na Sidebar
+- Reduzido uso de espaço horizontal em telas menores com sistema de menu recolhível
+- Aprimorada ergonomia de navegação com ícones de menu intuitivos e feedback visual
+- Otimizada performance de renderização com memo e useCallback para componentes do menu
+- Reestruturado fluxo de dados para evitar prop drilling entre Layout e componentes filhos
+- Refinada experiência de usuário com transições suaves CSS durante mudanças de estado
+- Reduzido overhead de CSS com classes tailwind mais eficientes
+- Implementada acessibilidade ARIA para todos os elementos do menu e botões de ação
+
+### Otimizado
+- Reduzido tamanho do bundle com importações seletivas de Material Icons
+- Implementado lazy loading para componentes de páginas menos acessadas
+- Melhorada eficiência de renderização com uso estratégico de React.memo
+- Cache optimizado para troca rápida entre estados do menu
+- Removidas dependências desnecessárias no frontend
+- Transicionado para uso de componentes funcionais e hooks em vez de classes
+
+### Padronizado
+- Estabelecido padrão consistente para exibição de títulos em todas as páginas
+- Definida estrutura modular para novos componentes de interface
+- Padronizado sistema de atalhos de teclado para navegação
+- Unificada nomenclatura de variáveis CSS para maior mantenabilidade
+- Estabelecido padrão para aria-labels em todos os elementos interativos
+
+### Investigado
+- Analisada causa-raiz da falta dos ícones Material no menu
+- Investigados problemas de build do Vite afetando hot reload
+- Pesquisadas melhores práticas de menu responsivo e recolhível
+- Examinadas estratégias alternativas para gerenciamento de estado da sidebar
 
 ## [0.53.0] - 2025-06-25
 
