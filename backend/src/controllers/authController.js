@@ -45,19 +45,19 @@ const authController = {
       }
 
       // Gera tokens (JWT e refresh token)
-      const { accessToken, refreshToken } = generateTokens(usuario);
+      const { accessToken, refreshToken, tokenId } = generateTokens(usuario);
 
-      // Salva o refresh token no banco de dados
+      // Salva o ID do refresh token no banco de dados
       await prisma.refreshToken.create({
         data: {
-          token: refreshToken,
+          token: tokenId,  // Armazena apenas o ID curto
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
           usuarioId: usuario.id
         }
       });
 
-      // Registra o login bem-sucedido
-      logger.info(`Login bem-sucedido: ${usuario.email} (ID: ${usuario.id})`);
+      // Registra o login bem-sucedido com detalhes do token
+      logger.info(`Login bem-sucedido: ${usuario.email} (ID: ${usuario.id}). TokenId salvo: ${tokenId}`);
 
       // Retorna os tokens e informações básicas do usuário
       res.json({
@@ -67,8 +67,7 @@ const authController = {
           id: usuario.id,
           nome: usuario.nome,
           email: usuario.email,
-          cargo: usuario.cargo,
-          permissoes: usuario.permissoes
+          nivel_id: usuario.nivel_id
         }
       });
     } catch (error) {
@@ -103,16 +102,23 @@ const authController = {
       }
 
       // Gera novos tokens
-      const tokens = generateTokens(usuario);
+      const { accessToken, refreshToken: novoRefreshToken, tokenId: nuevoTokenId } = generateTokens(usuario);
+      
+      // Log detalhado para depuração
+      logger.info(`Refresh bem-sucedido para usuário ${usuario.id}. Atualizando token ${tokenId} para ${nuevoTokenId}`);
 
       // Atualiza o refresh token no banco
       await prisma.refreshToken.update({
         where: { id: tokenId },
         data: {
-          token: tokens.refreshToken,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 dias
+          token: nuevoTokenId,  // Armazena apenas o ID curto do novo token
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
         }
       });
+
+      const tokens = { accessToken, refreshToken: novoRefreshToken };
+      
+      logger.info(`Novos tokens gerados e retornados para o usuário ${usuario.id}`);
 
       // Retorna os novos tokens
       res.json(tokens);
@@ -135,13 +141,23 @@ const authController = {
     }
 
     try {
-      // Invalida o refresh token
-      await prisma.refreshToken.deleteMany({
-        where: { token: refreshToken }
-      });
-
-      logger.info('Logout bem-sucedido');
-      res.status(204).send();
+      // Decodifica o token para obter o tokenId
+      try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const { tokenId } = decoded;
+        
+        // Invalida o refresh token pelo tokenId
+        await prisma.refreshToken.deleteMany({
+          where: { token: tokenId }
+        });
+        
+        logger.info('Logout bem-sucedido');
+        res.status(204).send();
+      } catch (error) {
+        // Se o token for inválido, apenas retorna sucesso
+        logger.warn(`Tentativa de logout com token inválido: ${error.message}`);
+        res.status(204).send();
+      }
     } catch (error) {
       logger.error(`Erro no logout: ${error.message}`);
       res.status(500).json({ message: 'Erro ao processar logout' });
@@ -155,7 +171,7 @@ const authController = {
    */
   validateToken(req, res) {
     // Se chegou até aqui, o middleware de autenticação já validou o token
-    res.status(200).json({ valid: true, usuario: req.user });
+    res.status(200).json({ valid: true, usuario: req.usuario });
   }
 };
 

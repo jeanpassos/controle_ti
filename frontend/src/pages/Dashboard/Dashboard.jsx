@@ -9,7 +9,7 @@ import { useAuth } from '../../hooks/useAuth';
  * @version 0.52.0
  */
 function Dashboard() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme(); // Removendo toggleTheme pois já existe no Layout principal
   const { user } = useAuth();
 
   // Dados fictícios para o placeholder
@@ -29,24 +29,8 @@ function Dashboard() {
 
   return (
     <div className="container-app py-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center">
-          <button 
-            onClick={toggleTheme} 
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center mr-4"
-          >
-            {theme === 'dark' ? 
-              <span>☀️ Tema Claro</span> : 
-              <span>🌙 Tema Escuro</span>
-            }
-          </button>
-          <div className="text-sm">
-            <span className="block font-medium">{user?.nome || 'Usuário'}</span>
-            <span className="text-gray-600 dark:text-gray-400">{user?.cargo || 'Admin'}</span>
-          </div>
-        </div>
-      </div>
+      {/* Título removido - agora exibido dinamicamente no header do Layout principal */}
+      <div className="mt-4 mb-8"></div>
 
       {/* Cards de estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

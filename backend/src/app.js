@@ -32,13 +32,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Limite de taxa de requisições
-const limiter = rateLimit({
-  windowMs: (process.env.RATE_LIMIT_WINDOW || 15) * 60 * 1000, // padrão: 15 minutos
-  max: process.env.RATE_LIMIT_MAX || 100, // padrão: 100 requisições
-  message: 'Muitas requisições deste IP, tente novamente mais tarde'
-});
-app.use('/api/', limiter);
+// Limite de taxa de requisições - DESABILITADO TEMPORARIAMENTE PARA TESTES
+// const limiter = rateLimit({
+//   windowMs: (process.env.RATE_LIMIT_WINDOW || 15) * 60 * 1000, // padrão: 15 minutos
+//   max: process.env.RATE_LIMIT_MAX || 100, // padrão: 100 requisições
+//   message: 'Muitas requisições deste IP, tente novamente mais tarde'
+// });
+// app.use('/api/', limiter);
 
 // Logging de requisições
 if (process.env.NODE_ENV !== 'test') {
@@ -59,6 +59,11 @@ app.use('/api/auth', require('./routes/authRoutes'));
 // Rotas de tabelas de suporte
 app.use('/api/tipos-equipamento', require('./routes/tipoEquipamentoRoutes'));
 
+// Rotas de personalização e acesso
+app.use('/api/niveis-acesso', require('./routes/nivelAcessoRoutes'));
+app.use('/api/menu', require('./routes/menuRoutes'));
+app.use('/api/temas', require('./routes/temaRoutes'));
+
 /* Rotas a serem implementadas conforme o desenvolvimento avança
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
 app.use('/api/equipamentos', require('./routes/equipamentoRoutes'));
@@ -69,7 +74,6 @@ app.use('/api/empresas', require('./routes/empresaRoutes'));
 app.use('/api/localizacoes', require('./routes/localizacaoRoutes'));
 app.use('/api/estados', require('./routes/estadoRoutes'));
 app.use('/api/cidades', require('./routes/cidadeRoutes'));
-app.use('/api/niveis-acesso', require('./routes/nivelAcessoRoutes'));
 app.use('/api/movimentacoes', require('./routes/movimentacaoRoutes'));
 app.use('/api/configuracoes', require('./routes/configuracaoRoutes'));
 app.use('/api/logs-auditoria', require('./routes/logAuditoriaRoutes'));

@@ -2,13 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Estilos personalizados globais */
+/* Variáveis de temas dinâmicas */
 @layer base {
   :root {
-    --color-text-light: #1e293b;
-    --color-text-dark: #f1f5f9;
-    --color-bg-light: #f8fafc;
-    --color-bg-dark: #0f172a;
+    /* Cores padrão que serão sobrescritas pelo ThemeContext */
+    --cor-primaria: #0284c7; /* azul */
+    --cor-secundaria: #0d9488; /* verde água */
+    --cor-fundo-claro: #f8fafc; /* cinza muito claro */
+    --cor-fundo-escuro: #0f172a; /* azul escuro */
+    --cor-texto-claro: #1e293b; /* cinza escuro */
+    --cor-texto-escuro: #f1f5f9; /* cinza claro */
+    --fonte-principal: 'Inter', system-ui, sans-serif;
   }
 
   body {

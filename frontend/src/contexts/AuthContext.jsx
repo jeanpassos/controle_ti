@@ -27,27 +27,62 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
+        console.log('🔄 AuthContext - Iniciando inicialização da autenticação');
         setIsLoading(true);
         
         // Verifica se há um usuário armazenado
         const storedUser = authService.getCurrentUser();
+        console.log('👤 AuthContext - Usuário armazenado:', storedUser ? storedUser.email : 'nenhum');
+        
         if (storedUser) {
-          // Verifica se o token armazenado ainda é válido
-          const isValid = await authService.validateToken();
+          // Primeiro tenta renovar o token se existir um refresh token
+          const refreshToken = localStorage.getItem('@ControleTI:refreshToken');
+          const accessToken = localStorage.getItem('@ControleTI:token');
+          console.log('🔑 AuthContext - Tokens encontrados:', {
+            accessToken: accessToken ? 'presente' : 'ausente',
+            refreshToken: refreshToken ? 'presente' : 'ausente'
+          });
           
-          if (isValid) {
-            setUser(storedUser);
-            setIsAuthenticated(true);
+          if (refreshToken) {
+            console.log('🔄 AuthContext - Tentando renovar token...');
+            const refreshSuccess = await authService.refreshToken();
+            console.log('🔄 AuthContext - Resultado do refresh:', refreshSuccess ? 'sucesso' : 'falha');
+            
+            if (refreshSuccess) {
+              // Token renovado com sucesso, usuário continua autenticado
+              setUser(storedUser);
+              setIsAuthenticated(true);
+              console.log('✅ AuthContext - Usuário autenticado via refresh token');
+            } else {
+              // Falha no refresh, limpa a sessão
+              console.log('❌ AuthContext - Falha no refresh, limpando sessão');
+              authService.clearSession();
+            }
           } else {
-            // Token inválido ou expirado e não foi possível renovar
-            authService.clearSession();
+            console.log('🔍 AuthContext - Sem refresh token, validando access token...');
+            // Sem refresh token, verifica se o access token ainda é válido
+            const isValid = await authService.validateToken();
+            console.log('🔍 AuthContext - Resultado da validação:', isValid ? 'válido' : 'inválido');
+            
+            if (isValid) {
+              setUser(storedUser);
+              setIsAuthenticated(true);
+              console.log('✅ AuthContext - Usuário autenticado via access token válido');
+            } else {
+              // Token inválido e sem refresh token
+              console.log('❌ AuthContext - Token inválido e sem refresh token, limpando sessão');
+              authService.clearSession();
+            }
           }
+        } else {
+          console.log('👤 AuthContext - Nenhum usuário armazenado');
         }
       } catch (error) {
-        console.error('Erro ao inicializar autenticação:', error);
+        console.error('❌ AuthContext - Erro ao inicializar autenticação:', error);
         authService.clearSession();
       } finally {
         setIsLoading(false);
+        console.log('🏁 AuthContext - Inicialização finalizada');
       }
     };
     

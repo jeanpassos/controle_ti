@@ -13,6 +13,21 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - Rascunho inicial da API REST
 - Planejamento da estrutura da UI
 
+## [0.54.0] - 2025-06-26
+
+### Adicionado
+- Implementado menu recolhível com exibição apenas de ícones e animação suave
+- Adicionado ícone de usuário na parte inferior da sidebar recolhida
+- Integração do Material Icons via CDN para exibição dos ícones no menu
+- Títulos de página dinâmicos no header principal do Layout
+
+### Melhorado
+- Substituição do botão de tema por ícones visuais de sol/lua
+- Centralização da exibição do título das páginas no header
+- UI mais consistente com exibição do nível de acesso do usuário na Sidebar
+- Reduzido uso de espaço horizontal em telas menores com menu recolhível
+- Melhorada ergonomia de navegação com ícones de menu intuitivos
+
 ## [0.53.0] - 2025-06-25
 
 ### Corrigido
