@@ -14,6 +14,56 @@ Esta aplicação web foi projetada para ser uma solução abrangente para empres
 
 **Estado**: Em desenvolvimento
 
+## O que há de novo na versão 0.54.0
+
+### Adicionado
+- Menu recolhível intuitivo com exibição apenas de ícones e animações suaves
+- Componente Sidebar independente com gerenciamento de estado expandido/recolhido
+- Ícone do usuário interativo na parte inferior da sidebar recolhida
+- Suporte completo para Material Icons via CDN para todos os ícones do sistema
+- Títulos dinâmicos centralizados no header principal (desacoplamento da UI)
+- Animações suaves em transições de estado com Tailwind
+- MenuContext para comunicação eficiente entre componentes de navegação
+- Serviços menuService.js e temaService.js para personalização
+- Configuração PostCSS otimizada para processamento Tailwind
+
+### Corrigido
+- Resolvido problema crítico de falta dos ícones Material Icons no frontend
+- Solucionadas questões de ergonomia em telas pequenas com sidebar flexível
+- Corrigido comportamento inconsistente de animação em estados alternados
+- Resolvido problema de layout quebrado em resoluções menores que 640px
+- Implementado ícone de usuário no menu recolhido antes ausente
+- Corrigido bug de sobreposição de elementos no header
+- Ajustado posicionamento incorreto do botão de alternância de tema
+- Eliminado flickering durante transições de tema
+
+### Melhorado
+- Botões de tema agora usam ícones visuais intuitivos de sol/lua
+- Títulos das páginas centralizados no header principal
+- UI mais consistente com exibição clara do nível de acesso
+- Melhor aproveitamento de espaço com sidebar recolhível
+- Experiência de navegação aprimorada com feedbacks visuais
+- Performance otimizada com memo e useCallback nos componentes
+- Fluxo de dados reestruturado para evitar prop drilling
+- Transições CSS suaves para melhor experiência do usuário
+- Classes Tailwind mais eficientes para menor overhead
+- Acessibilidade ARIA implementada em todos elementos interativos
+
+### Otimizado
+- Menor bundle size com importações seletivas de Material Icons
+- Implementado lazy loading para melhor performance inicial
+- Renderização otimizada com React.memo estratégico
+- Sistema de cache para transições rápidas entre estados
+- Removidas dependências desnecessárias do frontend
+- Migração de classes para componentes funcionais com hooks
+
+### Padronizado
+- Sistema consistente para exibição de títulos em todas as páginas
+- Arquitetura modular para componentes de interface
+- Implementação padronizada de atalhos de teclado
+- Nomenclatura unificada para variáveis CSS
+- Padrão para aria-labels em elementos interativos
+
 ## Funcionalidades Principais
 
 - Cadastro completo de equipamentos com informações detalhadas
