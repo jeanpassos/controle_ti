@@ -10,7 +10,7 @@ Esta aplicação web foi projetada para ser uma solução abrangente para empres
 
 ## Versão Atual
 
-![Versão](https://img.shields.io/badge/Versão-0.54.0-blue)
+![Versão](https://img.shields.io/badge/Versão-0.55.0-blue)
 
 **Estado**: Em desenvolvimento
 
