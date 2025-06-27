@@ -12,6 +12,7 @@ const EquipamentoDetalhes = lazy(() => import('./pages/Equipamentos/EquipamentoD
 const EquipamentoForm = lazy(() => import('./pages/Equipamentos/EquipamentoForm'))
 const TiposEquipamentoList = lazy(() => import('./pages/TiposEquipamento/TiposEquipamentoList'))
 const TipoEquipamentoForm = lazy(() => import('./pages/TiposEquipamento/TipoEquipamentoForm'))
+const Configuracoes = lazy(() => import('./pages/Configuracoes/Configuracoes'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 /**
@@ -58,6 +59,8 @@ function App() {
             <Route path="novo" element={<TipoEquipamentoForm />} />
             <Route path="editar/:id" element={<TipoEquipamentoForm />} />
           </Route>
+          
+          <Route path="configuracoes" element={<Configuracoes />} />
           
           {/* Adicionar outras rotas conforme necessário */}
         </Route>

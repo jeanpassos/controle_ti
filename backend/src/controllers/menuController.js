@@ -116,12 +116,14 @@ const menuController = {
       }
       
       // Busca itens de menu principais que sejam acessíveis para este nível
+      // Como os níveis no banco são: 1=admin (maior privilégio), 4=usuário (menor privilégio)
+      // Um usuário só deve ver itens com nivel_min >= seu nível
       const menuAcessivel = await prisma.menuItem.findMany({
         where: {
           pai_id: null,
           ativo: true,
           nivel_min: {
-            lte: Number(nivelId)  // Nível mínimo menor ou igual ao nível do usuário
+            gte: Number(nivelId)  // Nível mínimo maior ou igual ao nível do usuário
           },
         },
         orderBy: {
@@ -132,7 +134,7 @@ const menuController = {
             where: {
               ativo: true,
               nivel_min: {
-                lte: Number(nivelId)
+                gte: Number(nivelId)
               },
             },
             orderBy: {

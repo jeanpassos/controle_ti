@@ -7,6 +7,36 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Não publicado]
 
+## [0.55.0] - 2025-06-27
+
+### Adicionado
+- Implementado suporte completo a submenus hierárquicos no menu lateral
+- Desenvolvida exibição dinâmica de submenus administrativos 
+- Criado comportamento de submenu flutuante para o modo recolhido
+- Adicionada prevenção de navegação direta em itens com submenu
+- Implementada abordagem de UI que prioriza exibição de submenu em itens com filhos
+
+### Corrigido
+- Resolvido problema crítico de clique no menu "Configurações" que navegava diretamente à página
+- Solucionado problema de renderização incorreta dos submenus para itens com filhos
+- Corrigida lógica de exibição condicional baseada em pai/filho no modo recolhido
+- Implementada interceptação de eventos de clique para evitar navegação não-intencional
+- Ajustada CSS para exibição correta de submenus flutuantes em modo recolhido
+
+### Melhorado
+- Refinada interação do usuário com menus multinível no sidebar
+- Aprimorada experiência de submenu com posicionamento intuitivo
+- Otimizada exibição de itens administrativos em estrutura hierárquica centralizada
+- Reorganizados containers de submenu para melhor acessibilidade
+- Implementado CSS responsivo para exibição consistente em diferentes estados do menu
+
+### Investigado
+- Analisado em profundidade o comportamento incorreto do menu "Configurações"
+- Mapeada estrutura de dados do menu no backend e sua integração com o frontend
+- Documentada relação entre MenuContext, Sidebar e renderização condicional
+- Estudadas alternativas de implementação para navegação multinível
+- Identificados desafios e limitações da estrutura atual do menu dinâmico
+
 ### Adicionado
 - Estrutura inicial do projeto
 - Especificação de tabelas e campos

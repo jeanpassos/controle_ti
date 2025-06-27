@@ -3,6 +3,7 @@ const { seedNiveisAcesso } = require('./seed/niveis-acesso');
 const { seedMenuItems } = require('./seed/menu-items');
 const { seedTemas } = require('./seed/temas');
 const { seedUsuarios } = require('./seed/usuarios');
+const { seedConfiguracoes } = require('./seed/configuracoes');
 
 const prisma = new PrismaClient();
 
@@ -18,6 +19,9 @@ async function main() {
     
     // Temas
     await seedTemas(prisma);
+    
+    // Configurações do sistema
+    await seedConfiguracoes(prisma);
     
     // Usuários iniciais
     await seedUsuarios(prisma);

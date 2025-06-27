@@ -68,15 +68,18 @@ const Sidebar = ({ collapsed = false, toggleSidebar }) => {
     const hasChildren = item.filhos && item.filhos.length > 0;
     const isExpanded = expandedItems[item.id];
     
-    // No modo recolhido, só exibir itens raiz (sem pai) e sem filhos
-    if (collapsed && (item.pai_id || hasChildren)) {
+    // No modo recolhido, esconder apenas os itens que são filhos (têm pai)
+    if (collapsed && item.pai_id) {
       return null;
     }
     
+    // Se o item tem filhos, vamos tratá-lo como um container de submenu, mesmo que tenha URL
+    
     return (
-      <li key={item.id} className={`mb-1 ${collapsed ? 'flex justify-center' : ''}`}>
-        {item.url && !hasChildren ? (
-          // Item com URL e sem filhos (link direto)
+      <li key={item.id} className={`mb-1 ${collapsed ? 'flex justify-center' : ''} ${hasChildren ? 'relative' : ''}`}>
+        {/* Priorizar exibição do submenu se tiver filhos, independente de ter URL */}
+        {!hasChildren && item.url ? (
+          // Item sem filhos com URL (link direto)
           <Link
             to={item.url}
             className={`${collapsed ? 'p-2' : 'py-2 px-4'} flex items-center ${collapsed ? 'justify-center' : ''} rounded-lg transition-colors ${
@@ -89,28 +92,34 @@ const Sidebar = ({ collapsed = false, toggleSidebar }) => {
             <span className={collapsed ? '' : 'mr-3'}>{renderIcon(item.icone)}</span>
             {!collapsed && <span>{item.titulo}</span>}
           </Link>
-        ) : !collapsed && (
-          // Item sem URL ou com filhos (dropdown) - não exibir no modo recolhido
+        ) : (
+          // Item com filhos (dropdown) ou sem URL
           <>
             <button
-              onClick={() => toggleExpand(item.id)}
-              className={`flex items-center justify-between w-full py-2 px-4 rounded-lg transition-colors ${
+              onClick={(e) => {
+                e.preventDefault(); // Evita navegação direta
+                toggleExpand(item.id);
+              }}
+              className={`flex items-center justify-between ${collapsed ? 'p-2 justify-center' : 'py-2 px-4 w-full'} rounded-lg transition-colors ${
                 isActive 
                   ? 'bg-primary-50 text-primary-800 dark:bg-primary-900/50 dark:text-primary-100' 
                   : 'hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
+              title={collapsed ? item.titulo : ''}
             >
               <div className="flex items-center">
-                <span className="mr-3">{renderIcon(item.icone)}</span>
-                <span>{item.titulo}</span>
+                <span className={collapsed ? '' : 'mr-3'}>{renderIcon(item.icone)}</span>
+                {!collapsed && <span>{item.titulo}</span>}
               </div>
-              <span className="material-icons text-sm">
-                {isExpanded ? 'expand_less' : 'expand_more'}
-              </span>
+              {!collapsed && (
+                <span className="material-icons text-sm">
+                  {isExpanded ? 'expand_less' : 'expand_more'}
+                </span>
+              )}
             </button>
             
             {hasChildren && isExpanded && (
-              <ul className="pl-4 mt-1 space-y-1 border-l border-gray-200 dark:border-gray-700 ml-5">
+              <ul className={`${collapsed ? 'absolute left-full top-0 ml-1 bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 rounded-lg p-2 min-w-40' : 'pl-4 mt-1 space-y-1 border-l border-gray-200 dark:border-gray-700 ml-5'}`}>
                 {item.filhos.map(child => renderMenuItem(child))}
               </ul>
             )}

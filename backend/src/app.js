@@ -63,6 +63,7 @@ app.use('/api/tipos-equipamento', require('./routes/tipoEquipamentoRoutes'));
 app.use('/api/niveis-acesso', require('./routes/nivelAcessoRoutes'));
 app.use('/api/menu', require('./routes/menuRoutes'));
 app.use('/api/temas', require('./routes/temaRoutes'));
+app.use('/api/configuracoes', require('./routes/configuracoesRoutes'));
 
 /* Rotas a serem implementadas conforme o desenvolvimento avança
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
@@ -75,7 +76,6 @@ app.use('/api/localizacoes', require('./routes/localizacaoRoutes'));
 app.use('/api/estados', require('./routes/estadoRoutes'));
 app.use('/api/cidades', require('./routes/cidadeRoutes'));
 app.use('/api/movimentacoes', require('./routes/movimentacaoRoutes'));
-app.use('/api/configuracoes', require('./routes/configuracaoRoutes'));
 app.use('/api/logs-auditoria', require('./routes/logAuditoriaRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/relatorios', require('./routes/relatorioRoutes'));

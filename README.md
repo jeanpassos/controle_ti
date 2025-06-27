@@ -1,6 +1,6 @@
 # Gestão de Equipamentos TI
 
-*Versão: 0.54.0* | *Última atualização: 2025-06-26*
+*Versão: 0.55.0* | *Última atualização: 2025-06-27*
 
 Sistema de gerenciamento completo para inventário, movimentação e controle de equipamentos de TI empresariais.
 
@@ -13,6 +13,36 @@ Esta aplicação web foi projetada para ser uma solução abrangente para empres
 ![Versão](https://img.shields.io/badge/Versão-0.54.0-blue)
 
 **Estado**: Em desenvolvimento
+
+## O que há de novo na versão 0.55.0
+
+### Adicionado
+- Exibição dinâmica de submenus na navegação lateral
+- Suporte a menu multinível para itens administrativos
+- Comportamento inteligente de dropdown para submenus
+- Exibição flutuante de submenus quando o menu está recolhido
+- Componente de menu sensível ao contexto de navegação
+
+### Corrigido
+- Resolvido problema de navegação em itens com submenu
+- Corrigido comportamento incorreto do clique no item "Configurações"
+- Melhorada lógica de exibição para itens com filhos no MenuContext
+- Solucionado problema de renderização de submenus em menu recolhido
+- Implementada lógica de prevenção de navegação direta para itens com submenu
+
+### Melhorado
+- Refinada experiência de submenu no modo recolhido com painel flutuante
+- Aprimorada interação do usuário com submenus administrativos
+- Interface mais intuitiva para navegação em múltiplos níveis
+- Melhor organização hierárquica dos itens administrativos
+- Feedback visual mais claro para itens com submenus
+
+### Investigado
+- Analisada estrutura hierárquica do menu no banco de dados
+- Diagnosticado problema de comportamento dos submenus no frontend
+- Mapeadas dependências entre MenuContext, Layout e Sidebar
+- Investigada renderização condicional de itens baseada em pai/filho
+- Examinada relação entre dados do menu e apresentação visual
 
 ## O que há de novo na versão 0.54.0
 

@@ -16,10 +16,16 @@ import { FiSun, FiMoon } from 'react-icons/fi';
  */
 function Layout() {
   const { themeMode, toggleTheme } = useTheme();
-  const { logout, usuario } = useAuth();
+  const { logout, usuario, user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
   const [pageTitle, setPageTitle] = useState('Dashboard');
+  
+  // Depuração - visualizar a estrutura dos objetos usuario e user
+  console.log('DEBUG LAYOUT - usuario:', usuario);
+  console.log('DEBUG LAYOUT - user:', user);
+  console.log('DEBUG LAYOUT - nivel acesso:', usuario?.nivel || 'não encontrado');
+  console.log('DEBUG LAYOUT - nivel_id:', usuario?.nivel_id || 'não encontrado');
   
   // Atualiza o título da página baseado na rota atual
   useEffect(() => {
@@ -97,8 +103,19 @@ function Layout() {
               )}
             </button>
             
-            <div className="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center text-white">
-              {usuario?.nome?.charAt(0) || 'U'}
+            {/* Informações do usuário com nível de acesso */}
+            <div className="flex items-center gap-2">
+              <div className="text-right hidden md:block">
+                <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {usuario?.nome || 'Usuário'}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {usuario?.nivel?.nome || 'Sem nível de acesso'}
+                </div>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center text-white">
+                {usuario?.nome?.charAt(0) || 'U'}
+              </div>
             </div>
           </div>
         </header>
